@@ -1,0 +1,110 @@
+[
+  {
+    "file": "pointmaze-giant-training.mp4",
+    "source": "pointmaze_overlay_20261012/pointmaze_giant_16_native.mp4",
+    "task_id": null,
+    "episode": null,
+    "rollout_seed": null,
+    "success": null,
+    "steps": null,
+    "execution_horizon": null,
+    "segment_count": 16,
+    "playback": "Centered square crop matching the policy camera framing; original timing."
+  },
+  {
+    "file": "puzzle-4x4-training.mp4",
+    "source": "dataset_atomic_grid_20261012/puzzle-4x4_atomic_grid.mp4",
+    "task_id": null,
+    "episode": null,
+    "rollout_seed": null,
+    "success": null,
+    "steps": null,
+    "execution_horizon": null,
+    "segment_count": 16,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  },
+  {
+    "file": "cube-triple-training.mp4",
+    "source": "dataset_atomic_grid_20261012/cube-triple_atomic_grid.mp4",
+    "task_id": null,
+    "episode": null,
+    "rollout_seed": null,
+    "success": null,
+    "steps": null,
+    "execution_horizon": null,
+    "segment_count": 16,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  },
+  {
+    "file": "pointmaze-giant-gcfbc-task2.mp4",
+    "source": "pointmaze_gcfbc_tdaug_20261012_clean/pointmaze-giant/gcfbc/seed0/task2_episode1.mp4",
+    "task_id": 2,
+    "episode": 1,
+    "rollout_seed": 20001,
+    "success": false,
+    "steps": 1000,
+    "execution_horizon": 1,
+    "segment_count": null,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  },
+  {
+    "file": "pointmaze-giant-mchc-task2.mp4",
+    "source": "pointmaze_gcfbc_tdaug_20261012_clean/pointmaze-giant/tdaug/seed0/task2_episode1.mp4",
+    "task_id": 2,
+    "episode": 1,
+    "rollout_seed": 20001,
+    "success": true,
+    "steps": 851,
+    "execution_horizon": 1,
+    "segment_count": null,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  },
+  {
+    "file": "puzzle-4x4-gcfbc-task5.mp4",
+    "source": "manip_mchc_gcfbc_policy2m_exec5_20261012/puzzle-4x4/gcfbc/split1_seed0_exec5/task5_episode2.mp4",
+    "task_id": 5,
+    "episode": 2,
+    "rollout_seed": 50002,
+    "success": false,
+    "steps": 500,
+    "execution_horizon": 5,
+    "segment_count": null,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  },
+  {
+    "file": "puzzle-4x4-mchc-task5.mp4",
+    "source": "manip_mchc_gcfbc_policy2m_exec5_20261012/puzzle-4x4/mchc/split1_seed0_exec5/task5_episode2.mp4",
+    "task_id": 5,
+    "episode": 2,
+    "rollout_seed": 50002,
+    "success": true,
+    "steps": 336,
+    "execution_horizon": 5,
+    "segment_count": null,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  },
+  {
+    "file": "cube-triple-gcfbc-task3.mp4",
+    "source": "manip_mchc_gcfbc_policy2m_exec5_20261012/cube-triple/gcfbc/split1_seed0_exec5/task3_episode2.mp4",
+    "task_id": 3,
+    "episode": 2,
+    "rollout_seed": 30002,
+    "success": false,
+    "steps": 1000,
+    "execution_horizon": 5,
+    "segment_count": null,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  },
+  {
+    "file": "cube-triple-mchc-task3.mp4",
+    "source": "manip_mchc_gcfbc_policy2m_exec5_20261012/cube-triple/mchc/split1_seed0_exec5/task3_episode2.mp4",
+    "task_id": 3,
+    "episode": 2,
+    "rollout_seed": 30002,
+    "success": true,
+    "steps": 903,
+    "execution_horizon": 5,
+    "segment_count": null,
+    "playback": "Original frames and timing; lossless remux for web playback."
+  }
+]

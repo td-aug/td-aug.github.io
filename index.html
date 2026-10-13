@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Imagining Goals with Geometric Horizon Models for Policy Generalization">
+  <title>Imagining Goals with Geometric Horizon Models for Policy Generalization</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E%F0%9F%A6%BE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+  <main>
+    <header class="publication-header container">
+      <h1>Imagining Goals with Geometric Horizon Models for Policy Generalization</h1>
+      <div class="publication-authors">
+        <div class="author-row">
+          <span><a href="https://danielblawson.github.io/">Daniel Lawson</a><sup>1,2</sup>,</span>
+          <span><a href="https://dhruvsreenivas.github.io/">Dhruv Sreenivas</a><sup>1,2</sup>,</span>
+          <span><a href="https://ahugs.github.io/">Adriana Hugessen</a><sup>1,2</sup></span>
+        </div>
+        <div class="author-row">
+          <span><a href="https://kkhetarpal.github.io/">Khimya Khetarpal</a><sup>1,3,&dagger;</sup>,</span>
+          <span><a href="https://neo-x.github.io/">Glen Berseth</a><sup>1,2,&dagger;</sup></span>
+        </div>
+      </div>
+      <div class="publication-affiliations">
+        <span><sup>1</sup>Mila</span>
+        <span><sup>2</sup>Universit&eacute; de Montr&eacute;al</span>
+        <span><sup>3</sup>Google DeepMind</span>
+      </div>
+      <p class="publication-advising"><sup>&dagger;</sup>Equal Advising</p>
+      <div class="publication-links">
+        <a href="https://openreview.net/forum?id=rL2Jrd7SRX">Paper</a>
+        <a href="https://github.com/td-aug/td-aug"><img class="github-icon" src="static/icons/github.svg" width="20" height="20" alt="" aria-hidden="true">Code</a>
+        <a href="https://huggingface.co/datasets/daniellawson9999/tdaug-datasets"><img src="static/icons/huggingface.svg" width="20" height="20" alt="" aria-hidden="true">Data</a>
+      </div>
+    </header>
+
+    <section class="section container abstract" aria-labelledby="abstract-title">
+      <h2 id="abstract-title">Abstract</h2>
+      <p>Training from offline data has allowed for substantial progress in domains such as robotics, leading to general-purpose policies that can be easily applied zero-shot or efficiently finetuned for downstream tasks. However, these policies can still have poor generalization, both due to the choice of modeling objective and from learning from a static dataset. In this work, we focus on the challenging task of zero-shot goal generalization, where a policy is evaluated on unseen tasks that require combining its existing knowledge (compositional generalization). An avenue for improving a policy's generalization is by generating new experience with world models; however, such generation has proven difficult for longer horizons. Thus, to alleviate this issue, we propose <strong>TD-Aug</strong>, which samples from a geometric horizon model and allows for directly imagining novel outcomes that can be achieved by composing existing knowledge. We demonstrate that training on these future outcomes as goals for goal-conditioned BC policies significantly improves generalization in stitching-based OGBench tasks.</p>
+    </section>
+
+    <section class="section container" aria-labelledby="overview-title">
+      <h2 id="overview-title">Overview</h2>
+      <p class="section-text"><strong>Overview of TD-Aug.</strong> We <strong>a)</strong> train a GHM on an offline dataset to approximate samples from the successor measure of the behavior mixture policy. Then, <strong>b)</strong> we train BC policies on a mix of ground-truth and generated goals, <em>improving zero-shot generalization on compositional tasks:</em></p>
+      <figure>
+        <a href="static/figures/method.pdf">
+          <img src="static/images/method.png" width="2048" height="644" alt="A geometric horizon model generates future states conditioned on a state and action. These predictions become goals for a behavior-cloning policy." loading="lazy">
+        </a>
+      </figure>
+      <p class="overview-explanation">TD-Aug generates goals through a GHM that samples likely future states (<i>s</i><sub>+</sub>), conditioned on the current state and action via <i>M</i><sup>&beta;</sup>(&middot; | <i>s</i>, <i>a</i>). The GHM stitches across trajectories, predicting which outcomes are likely when composing behavior starting from different actions:</p>
+      <div class="overview-panels">
+        <figure>
+          <img src="static/images/pointmaze-training-trajectories.png" width="505" height="379" alt="Short ground-truth trajectories from the pointmaze-giant training dataset." loading="lazy">
+          <figcaption>Ground-truth trajectories from the dataset.</figcaption>
+        </figure>
+        <figure>
+          <img src="static/images/pointmaze-flow-generation.gif?v=matched-starts-20261012" width="505" height="379" alt="MCHC TD-Flow sample generation over 10 flow steps, with five outlined initial states and action arrows. Each query and its samples share a color." loading="lazy">
+          <figcaption>Samples generated by a GHM (TD-Flow), conditioned on each outlined initial state and action.</figcaption>
+        </figure>
+      </div>
+      <!--
+      <figure>
+        <a href="static/figures/maze-stitching.pdf">
+          <img src="static/images/maze-stitching.png" width="1515" height="379" alt="PointMaze-giant: short training trajectories, long evaluation routes, and generated future states." loading="lazy">
+        </a>
+        <figcaption>Short training trajectories (left), long-horizon evaluation tasks (middle), and futures generated by a geometric horizon model (right).</figcaption>
+      </figure>
+      -->
+    </section>
+
+    <section class="section container" aria-labelledby="results-title">
+      <h2 id="results-title">Results</h2>
+      <p class="section-text">Results on OGBench &ldquo;stitch&rdquo; tasks. TD-Aug enables BC trained on short trajectories or atomic tasks to generalize to long-horizon, composite goals.</p>
+
+      <div class="video-row">
+        <h3>pointmaze-giant-stitch</h3>
+        <div class="video-grid">
+          <figure>
+            <h4>Training data</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/pointmaze-giant-training.jpg?v=overlay-square-20261012" aria-label="16 pointmaze-giant training trajectories superimposed in one maze">
+              <source src="static/videos/pointmaze-giant-training.mp4?v=overlay-square-20261012" type="video/mp4">
+              <a href="static/videos/pointmaze-giant-training.mp4?v=overlay-square-20261012">Download video</a>
+            </video>
+            <figcaption>Superimposed training trajectories</figcaption>
+          </figure>
+          <figure>
+            <h4>GCFBC</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/pointmaze-giant-gcfbc-task2.jpg" aria-label="GCFBC on PointMaze-giant task 2">
+              <source src="static/videos/pointmaze-giant-gcfbc-task2.mp4" type="video/mp4">
+              <a href="static/videos/pointmaze-giant-gcfbc-task2.mp4">Download video</a>
+            </video>
+            <figcaption>Task 2: navigate from bottom right to top left<br>(task success 0%, overall success 0%)</figcaption>
+          </figure>
+          <figure>
+            <h4>TD-Aug (MCHC)</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/pointmaze-giant-mchc-task2.jpg" aria-label="MCHC on PointMaze-giant task 2">
+              <source src="static/videos/pointmaze-giant-mchc-task2.mp4" type="video/mp4">
+              <a href="static/videos/pointmaze-giant-mchc-task2.mp4">Download video</a>
+            </video>
+            <figcaption>Task 2: navigate from bottom right to top left<br>(task success 70%, overall success 54%)</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="video-row">
+        <h3>puzzle-4x4-stitch</h3>
+        <div class="video-grid">
+          <figure>
+            <h4>Training data</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/puzzle-4x4-training.jpg" aria-label="Puzzle-4 by 4 training-data montage">
+              <source src="static/videos/puzzle-4x4-training.mp4" type="video/mp4">
+              <a href="static/videos/puzzle-4x4-training.mp4">Download video</a>
+            </video>
+            <figcaption>Individual training trajectories</figcaption>
+          </figure>
+          <figure>
+            <h4>GCFBC</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/puzzle-4x4-gcfbc-task5.jpg" aria-label="GCFBC on puzzle-4x4 task 5, episode 2">
+              <source src="static/videos/puzzle-4x4-gcfbc-task5.mp4" type="video/mp4">
+              <a href="static/videos/puzzle-4x4-gcfbc-task5.mp4">Download video</a>
+            </video>
+            <figcaption title="Rates use full 10-action chunk execution; this demonstration executes 5 actions before replanning.">Task 5: turn all buttons red<br>(task success 0%, overall success 0%)</figcaption>
+          </figure>
+          <figure>
+            <h4>TD-Aug (MCHC)</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/puzzle-4x4-mchc-task5.jpg" aria-label="TD-Aug (MCHC) on puzzle-4x4 task 5, episode 2">
+              <source src="static/videos/puzzle-4x4-mchc-task5.mp4" type="video/mp4">
+              <a href="static/videos/puzzle-4x4-mchc-task5.mp4">Download video</a>
+            </video>
+            <figcaption title="Rates use full 10-action chunk execution; this demonstration executes 5 actions before replanning.">Task 5: turn all buttons red<br>(task success 34%, overall success 40%)</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="video-row">
+        <h3>cube-triple-stitch</h3>
+        <div class="video-grid">
+          <figure>
+            <h4>Training data</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/cube-triple-training.jpg" aria-label="Cube-triple training-data montage">
+              <source src="static/videos/cube-triple-training.mp4" type="video/mp4">
+              <a href="static/videos/cube-triple-training.mp4">Download video</a>
+            </video>
+            <figcaption>Individual training trajectories</figcaption>
+          </figure>
+          <figure>
+            <h4>GCFBC</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/cube-triple-gcfbc-task3.jpg" aria-label="GCFBC on Cube-triple task 3">
+              <source src="static/videos/cube-triple-gcfbc-task3.mp4" type="video/mp4">
+              <a href="static/videos/cube-triple-gcfbc-task3.mp4">Download video</a>
+            </video>
+            <figcaption title="Rates use full 10-action chunk execution; this demonstration executes 5 actions before replanning.">Task 3: unstack and relocate all three cubes<br>(task success 0%, overall success 20%)</figcaption>
+          </figure>
+          <figure>
+            <h4>TD-Aug (MCHC)</h4>
+            <video autoplay muted loop playsinline controls preload="metadata" poster="static/videos/cube-triple-mchc-task3.jpg" aria-label="MCHC on Cube-triple task 3">
+              <source src="static/videos/cube-triple-mchc-task3.mp4" type="video/mp4">
+              <a href="static/videos/cube-triple-mchc-task3.mp4">Download video</a>
+            </video>
+            <figcaption title="Rates use full 10-action chunk execution; this demonstration executes 5 actions before replanning.">Task 3: unstack and relocate all three cubes<br>(task success 25%, overall success 31%)</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p class="caption">Seed-0 demonstrations for each policy pair. Success rates average three checkpoints per seed, then three seeds.</p>
+
+      <div class="result-tables">
+        <h3>Quantitative Results</h3>
+        <div class="table-scroll" role="region" aria-label="Table 1: PointMaze results" tabindex="0">
+          <table class="results-table">
+            <caption><strong>Table 1.</strong> Generalization on pointmaze stitching datasets. Success rate (%).</caption>
+            <thead><tr><th scope="col">pointmaze</th><th scope="col">GCFBC</th><th scope="col">+ Cluster-Aug</th><th scope="col">+ Dyn-Aug</th><th scope="col">+ MC-Aug</th><th scope="col">+ TD-Aug<sub>2</sub></th><th scope="col">+ TD-Aug</th><th scope="col" class="baseline-divider">GCIQL</th><th scope="col">QRL</th><th scope="col">CRL</th><th scope="col">HIQL</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">pointmaze-medium-stitch</th><td>55 &plusmn; 10</td><td>89 &plusmn; 5</td><td>94 &plusmn; 6</td><td>70 &plusmn; 2</td><td>96 &plusmn; 1</td><td><strong>99 &plusmn; 0</strong></td><td class="baseline-divider">74 &plusmn; 1</td><td>88 &plusmn; 5</td><td>4 &plusmn; 2</td><td>71 &plusmn; 8</td></tr>
+              <tr><th scope="row">pointmaze-large-stitch</th><td>26 &plusmn; 6</td><td>62 &plusmn; 8</td><td>51 &plusmn; 10</td><td>28 &plusmn; 17</td><td>40 &plusmn; 3</td><td><strong>97 &plusmn; 3</strong></td><td class="baseline-divider">40 &plusmn; 1</td><td>89 &plusmn; 15</td><td>0 &plusmn; 0</td><td>18 &plusmn; 4</td></tr>
+              <tr><th scope="row">pointmaze-giant-stitch</th><td>0 &plusmn; 0</td><td>3 &plusmn; 6</td><td>0 &plusmn; 0</td><td>0 &plusmn; 0</td><td>0 &plusmn; 0</td><td><strong>54 &plusmn; 17</strong></td><td class="baseline-divider">0 &plusmn; 0</td><td><strong>54 &plusmn; 9</strong></td><td>0 &plusmn; 0</td><td>0 &plusmn; 0</td></tr>
+              <tr><th scope="row">pointmaze-teleport-stitch</th><td>44 &plusmn; 7</td><td>47 &plusmn; 2</td><td>40 &plusmn; 7</td><td>48 &plusmn; 3</td><td>45 &plusmn; 4</td><td><strong>66 &plusmn; 3</strong></td><td class="baseline-divider">27 &plusmn; 1</td><td>2 &plusmn; 4</td><td>10 &plusmn; 5</td><td>30 &plusmn; 3</td></tr>
+              <tr class="average-row"><th scope="row">Average</th><td>31</td><td>50</td><td>46</td><td>37</td><td>45</td><td><strong>79</strong></td><td class="baseline-divider">35</td><td>58</td><td>4</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-scroll" role="region" aria-label="Table 2: Visual AntMaze results" tabindex="0">
+          <table class="results-table">
+            <caption><strong>Table 2.</strong> Generalization on visual antmaze stitching datasets. Success rate (%).</caption>
+            <thead><tr><th scope="col">visual antmaze</th><th scope="col">AE-GCFBC</th><th scope="col">+ MC-Aug</th><th scope="col">+ TD-Aug<sub>2</sub></th><th scope="col">+ TD-Aug</th><th scope="col" class="baseline-divider">GCBC</th><th scope="col" class="baseline-divider">GCIQL</th><th scope="col">QRL</th><th scope="col">CRL</th><th scope="col">HIQL</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">visual-antmaze-medium-stitch</th><td>45 &plusmn; 4</td><td>60 &plusmn; 2</td><td>56 &plusmn; 1</td><td><strong>84 &plusmn; 7</strong></td><td class="baseline-divider">69 &plusmn; 4</td><td class="baseline-divider">9 &plusmn; 0</td><td>0 &plusmn; 0</td><td>82 &plusmn; 2</td><td><strong>92 &plusmn; 1</strong></td></tr>
+              <tr><th scope="row">visual-antmaze-large-stitch</th><td>12 &plusmn; 1</td><td>19 &plusmn; 1</td><td>9 &plusmn; 0</td><td><strong>28 &plusmn; 1</strong></td><td class="baseline-divider">21 &plusmn; 6</td><td class="baseline-divider">1 &plusmn; 0</td><td>1 &plusmn; 0</td><td>29 &plusmn; 6</td><td><strong>46 &plusmn; 2</strong></td></tr>
+              <tr class="average-row"><th scope="row">Average</th><td>29</td><td>40</td><td>33</td><td><strong>56</strong></td><td class="baseline-divider">45</td><td class="baseline-divider">5</td><td>1</td><td>56</td><td><strong>69</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-scroll" role="region" aria-label="Table 3: Manipulation results" tabindex="0">
+          <table class="results-table">
+            <caption><strong>Table 3.</strong> Manipulation with oracle goals and action chunking. Success rate (%).</caption>
+            <thead>
+              <tr><th scope="col" rowspan="2">Environment</th><th scope="colgroup" colspan="2">GCFBC</th><th scope="col">+ TD-Aug<sub>2</sub></th><th scope="col">+ TD-Aug</th><th scope="col" class="baseline-divider">GCIQL</th><th scope="col">HIQL</th></tr>
+              <tr><th scope="col">play</th><th scope="col">stitch</th><th scope="col">stitch</th><th scope="col">stitch</th><th scope="col" class="baseline-divider">stitch</th><th scope="col">stitch</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">cube-double</th><td>75 &plusmn; 1</td><td>20 &plusmn; 0</td><td>78 &plusmn; 2</td><td><strong>84 &plusmn; 0</strong></td><td class="baseline-divider">63 &plusmn; 1</td><td>6 &plusmn; 2</td></tr>
+              <tr><th scope="row">cube-triple</th><td>35 &plusmn; 5</td><td>20 &plusmn; 0</td><td><strong>36 &plusmn; 5</strong></td><td>31 &plusmn; 2</td><td class="baseline-divider">8 &plusmn; 2</td><td>0 &plusmn; 0</td></tr>
+              <tr><th scope="row">puzzle-4x4</th><td>23 &plusmn; 2</td><td>0 &plusmn; 0</td><td>18 &plusmn; 0</td><td><strong>40 &plusmn; 2</strong></td><td class="baseline-divider">16 &plusmn; 5</td><td>0 &plusmn; 0</td></tr>
+              <tr class="average-row"><th scope="row">Average</th><td>44</td><td>13</td><td>44</td><td><strong>52</strong></td><td class="baseline-divider">29</td><td>2</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="caption">Mean &plusmn; standard deviation over 3 seeds, after averaging the last 3 checkpoints within each seed. TD-Aug<sub>2</sub> uses TD<sup>2</sup>-&beta;; TD-Aug uses MCHC-&beta;. Bold highlights the best BC augmentation and the best method overall on stitching datasets.</p>
+      </div>
+    </section>
+
+    <!--
+    <section class="section container" aria-labelledby="results-title">
+      <h2 id="results-title">OGBench Results</h2>
+      <p class="section-text">TD-Aug improves behavior cloning on stitching tasks in state-based navigation, visual navigation, and manipulation.</p>
+      <div class="table-scroll">
+        <table>
+          <caption>Average success rate (%) across environments in each domain.</caption>
+          <thead><tr><th scope="col">Domain</th><th scope="col">GCFBC</th><th scope="col">+ TD-Aug</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">PointMaze</th><td>31</td><td><strong>79</strong></td></tr>
+            <tr><th scope="row">Visual AntMaze</th><td>29</td><td><strong>56</strong></td></tr>
+            <tr><th scope="row">Manipulation</th><td>13</td><td><strong>52</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption">Results average the last three checkpoints within each seed, then average over three seeds. Visual AntMaze uses AE-GCFBC. See the paper for per-environment results and additional baselines.</p>
+    </section>
+
+    <section class="section container" aria-labelledby="horizon-title">
+      <h2 id="horizon-title">Long-Horizon Prediction</h2>
+      <figure class="horizon-figure">
+        <a href="static/figures/horizon-emd.pdf">
+          <img src="static/images/horizon-emd.png" width="1023" height="676" alt="Earth mover's distance versus effective horizon on PointMaze-large, comparing Monte Carlo, TD-squared-beta, MCHC-beta, and one-step models." loading="lazy">
+        </a>
+        <figcaption>MCHC-&beta; combines Monte Carlo sampling with temporal-difference bootstrapping to improve long-horizon prediction. We compare predicted future-state distributions to a collected, directed reference dataset. Lower EMD is better.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section container" aria-labelledby="visual-title">
+      <h2 id="visual-title">Visual Navigation</h2>
+      <figure>
+        <a href="static/figures/visual-samples.pdf">
+          <img src="static/images/visual-samples.png" width="1720" height="389" alt="Visual AntMaze-medium: generated positions, real future observations, and decoded generated observations." loading="lazy">
+        </a>
+        <figcaption>Real future observations (top) and decoded GHM samples (bottom) on visual AntMaze-medium. The model predicts future states in an autoencoder latent space.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section container" aria-labelledby="manipulation-title">
+      <h2 id="manipulation-title">Manipulation</h2>
+      <figure class="manipulation-figure">
+        <a href="static/figures/cube-samples.pdf">
+          <img src="static/images/cube-samples.webp" width="2131" height="4290" alt="Four Cube-triple starting states, empirical and generated future overlays, and five individual generated samples per state." loading="lazy">
+        </a>
+        <figcaption>Each column begins at a different Cube-triple state. Empirical futures are sampled from the recorded trajectory; generated futures are independent GHM samples. Aggregate rows overlay many future states, while the remaining rows show individual samples.</figcaption>
+      </figure>
+    </section>
+    -->
+  </main>
+</body>
+</html>
